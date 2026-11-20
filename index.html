@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Change Order Request | WS Lawn Care Services, LLC</title>
+<style>
+  :root { --g:#21A348; --gd:#1a8a3c; --bg:#f4f8f5; --ink:#1f2d27; --mute:#6b7c73; --line:#d9e4dd; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16px; line-height:1.45; }
+  header { background:linear-gradient(90deg,#2ecc71,var(--g)); color:#fff; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+  header img { height:52px; width:auto; background:#fff; border-radius:8px; padding:4px; }
+  header h1 { font-size:20px; margin:0; } header p { margin:2px 0 0; font-size:13px; opacity:.95; }
+  main { max-width:720px; margin:0 auto; padding:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  h2 { font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--gd); margin:0 0 12px; }
+  label.f { display:block; font-size:13px; font-weight:600; margin:10px 0 4px; }
+  input[type=text], input[type=tel], input[type=email], input[type=date], textarea, select { width:100%; padding:11px 12px; border:2px solid var(--line); border-radius:8px; font:inherit; background:#fff; }
+  input:focus, textarea:focus, select:focus { outline:none; border-color:var(--g); }
+  input[readonly] { background:#f1f5f2; color:#41524a; }
+  textarea { min-height:78px; resize:vertical; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; } @media (max-width:560px){ .row{ grid-template-columns:1fr; } }
+  .opt { display:flex; gap:10px; align-items:flex-start; padding:12px; border:2px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer; }
+  .opt.on { border-color:var(--g); background:#eaf7ee; }
+  .opt input { width:22px; height:22px; margin:2px 0 0; accent-color:var(--g); flex:none; }
+  .opt b { display:block; } .opt small { color:var(--mute); }
+  .detail { display:none; margin:-2px 0 12px 12px; padding-left:12px; border-left:4px solid var(--g); }
+  .detail.show { display:block; }
+  .hint { font-size:12px; color:var(--mute); margin-top:4px; }
+  .note { background:#fff9e6; border:1px solid #f0c674; border-radius:8px; padding:10px 12px; font-size:13px; }
+  button.go { width:100%; padding:16px; background:linear-gradient(90deg,var(--g),#2ecc71); color:#fff; border:0; border-radius:10px; font:inherit; font-weight:700; font-size:16px; cursor:pointer; }
+  button.go[disabled] { opacity:.6; cursor:wait; }
+  #err { display:none; background:#fdecea; border:1px solid #e74c3c; color:#a93226; border-radius:8px; padding:10px 12px; margin-bottom:12px; font-size:14px; }
+  #done { display:none; text-align:center; padding:28px 16px; }
+  #done .ck { font-size:48px; }
+  .hp { position:absolute; left:-9999px; top:-9999px; height:0; overflow:hidden; }
+  footer { text-align:center; font-size:12px; color:var(--mute); padding:8px 16px 28px; }
+</style>
+</head>
+<body>
+<header>
+  <img src="https://static.wixstatic.com/media/99a075_f0b64d954a90417ba2ac87c06f85804a~mv2.png" alt="WS Lawn Care Services">
+  <div><h1>Change Order Request</h1><p>Tell us what you'd like adjusted on your estimate</p></div>
+</header>
+<main>
+  <div id="done" class="card">
+    <div class="ck">✅</div>
+    <h2 style="font-size:18px;text-transform:none;letter-spacing:0">Request received!</h2>
+    <p>Thank you<span id="doneName"></span>. Your change order request has been sent to our team. We'll review it and send you an updated estimate. If it's urgent, call or text <b>321.209.0668</b>.</p>
+    <p style="color:var(--mute);font-size:13px">You Grow It, We Mow It!® · Commitment Without Compromise</p>
+  </div>
+
+  <form id="form" autocomplete="on" novalidate>
+    <div id="err"></div>
+
+    <div class="card">
+      <h2>Your information</h2>
+      <label class="f" for="client">Name</label>
+      <input type="text" id="client" autocomplete="name">
+      <label class="f" for="address">Property address</label>
+      <input type="text" id="address" autocomplete="street-address">
+      <div class="row">
+        <div><label class="f" for="job">Project / job</label><input type="text" id="job"></div>
+        <div><label class="f" for="jobType">Type of work</label><input type="text" id="jobType"></div>
+      </div>
+      <div class="row">
+        <div><label class="f" for="phone">Phone</label><input type="tel" id="phone" autocomplete="tel"></div>
+        <div><label class="f" for="email">Email</label><input type="email" id="email" autocomplete="email"></div>
+      </div>
+      <label class="f" for="contactPref">Best way to reach you</label>
+      <select id="contactPref"><option>Phone call</option><option>Text message</option><option>Email</option></select>
+      <div id="scopeBox" class="hint" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <h2>What would you like to change?</h2>
+      <div class="hint" style="margin:-4px 0 10px">Check everything that applies.</div>
+      <div id="types"></div>
+    </div>
+
+    <div class="card">
+      <h2>Anything else?</h2>
+      <label class="f" for="notes">Additional details or questions</label>
+      <textarea id="notes" placeholder="Anything else we should know about the change you want"></textarea>
+      <div class="note" style="margin-top:12px">Changes may adjust your estimate total. We'll send an updated estimate showing the previous and new price before any work begins.</div>
+    </div>
+
+    <div class="hp" aria-hidden="true"><label>Website <input type="text" id="hp" tabindex="-1" autocomplete="off"></label></div>
+    <button type="submit" class="go" id="send">Send Change Order Request</button>
+  </form>
+</main>
+<footer>WS Lawn Care Services, LLC · Call or text 321.209.0668 · support@wslawncareservicesllc.com</footer>
+
+<script>
+// Same Apps Script web app the estimator uses. The submitChangeOrder action is open (no shared key) because customers use this page.
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxD_YPo7UBIKGj5jpbP3TACQfB9eJGi5oLNsEoUN-2oLsn-Cq9ZjhJdy6RAxClMyePRNw/exec';
+
+var TYPES = [
+  { k:'mulch',   label:'Mulch color or type', hint:'Pine bark, brown, red, chocolate…', ph:'Which mulch would you like instead?' },
+  { k:'rock',    label:'Decorative rock type or size', hint:'Granite, pea stone, river rock, lava rock…', ph:'Which rock type/size would you like instead?' },
+  { k:'sod',     label:'Sod type', hint:'Bahia, Floratam, Pro Vista, Citra Blue, Zoysia, Seville, Bermuda…', ph:'Which sod would you like instead?' },
+  { k:'edging',  label:'Composite edging color or style', hint:'', ph:'Which edging color or style would you like?' },
+  { k:'size',    label:'Change the size or area of the work', hint:'Bigger, smaller, different areas', ph:'Which area(s) and what should change?' },
+  { k:'date',    label:'Change the date / timing', hint:'', ph:'', date:true },
+  { k:'phases',  label:'Break the project into phases', hint:'Do part now and part later', ph:'Which parts first, and which parts later?' },
+  { k:'add',     label:'Add something to the scope of work', hint:'', ph:'What would you like us to add?' },
+  { k:'remove',  label:'Remove something from the scope of work', hint:'', ph:'What would you like removed?' },
+  { k:'other',   label:'Something else', hint:'', ph:'Tell us what you need' }
+];
+
+var $ = function (id) { return document.getElementById(id); };
+var P = new URLSearchParams(location.search);
+// Unreplaced Service Autopilot merge tags like [clientname] mean the tag did not fill in, so treat them as blank
+var pv = function (k) { var v = (P.get(k) || '').trim(); return /^\[[^\]]*\]$/.test(v) ? '' : v; };
+
+(function init() {
+  ['client','address','job','jobType','phone','email'].forEach(function (k) { $(k).value = pv(k); });
+  var sc = pv('scope'); if (sc) { $('scopeBox').style.display = 'block'; $('scopeBox').textContent = 'Current estimate: ' + sc + (pv('total') ? ' · ' + pv('total') : ''); }
+  $('types').innerHTML = TYPES.map(function (t) {
+    return '<label class="opt" id="o_' + t.k + '"><input type="checkbox" data-k="' + t.k + '"><span><b>' + t.label + '</b>' + (t.hint ? '<small>' + t.hint + '</small>' : '') + '</span></label>'
+      + '<div class="detail" id="d_' + t.k + '">'
+      + (t.date ? '<label class="f">Preferred new date or timeframe</label><input type="text" id="v_' + t.k + '" placeholder="e.g. the week of December 8, or after the holidays">'
+                : '<label class="f">Details</label><textarea id="v_' + t.k + '" placeholder="' + t.ph + '"></textarea>') + '</div>';
+  }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#types input[type=checkbox]'), function (cb) {
+    cb.addEventListener('change', function () {
+      var k = cb.getAttribute('data-k');
+      $('o_' + k).classList.toggle('on', cb.checked); $('d_' + k).classList.toggle('show', cb.checked);
+      if (cb.checked) $('v_' + k).focus();
+    });
+  });
+})();
+
+function showErr(m) { var e = $('err'); e.textContent = m; e.style.display = 'block'; e.scrollIntoView({ behavior:'smooth', block:'center' }); }
+
+$('form').addEventListener('submit', async function (ev) {
+  ev.preventDefault(); $('err').style.display = 'none';
+  var types = [];
+  TYPES.forEach(function (t) {
+    if (document.querySelector('#types input[data-k="' + t.k + '"]').checked) types.push({ key:t.k, label:t.label, detail:($('v_' + t.k).value || '').trim() });
+  });
+  var notes = $('notes').value.trim();
+  if (!$('client').value.trim()) return showErr('Please enter your name.');
+  if (!$('phone').value.trim() && !$('email').value.trim()) return showErr('Please enter a phone number or email so we can reach you.');
+  if (!types.length && !notes) return showErr('Please check at least one change, or describe it in the notes.');
+  var empty = types.filter(function (t) { return !t.detail; });
+  if (empty.length) return showErr('Please add a few details for: ' + empty.map(function (t) { return t.label; }).join(', ') + '.');
+  var btn = $('send'); btn.disabled = true; btn.textContent = 'Sending…';
+  var body = {
+    action:'submitChangeOrder', hp:$('hp').value,
+    client:$('client').value.trim(), address:$('address').value.trim(), job:$('job').value.trim(), jobType:$('jobType').value.trim(),
+    phone:$('phone').value.trim(), email:$('email').value.trim(), contactPref:$('contactPref').value,
+    estimateTotal:pv('total'), scope:pv('scope'), estimateRef:pv('est'), types:types, notes:notes
+  };
+  try {
+    var r = await fetch(SCRIPT_URL, { method:'POST', headers:{ 'Content-Type':'text/plain' }, body:JSON.stringify(body) });
+    var j = await r.json();
+    if (!j.success) throw new Error(j.error || 'Send failed');
+    $('form').style.display = 'none';
+    $('doneName').textContent = body.client ? ', ' + body.client.split(' ')[0] : '';
+    $('done').style.display = 'block'; window.scrollTo(0, 0);
+  } catch (err) {
+    btn.disabled = false; btn.textContent = 'Send Change Order Request';
+    showErr('We could not send your request (' + (err.message || err) + '). Please try again, or call or text 321.209.0668.');
+  }
+});
+</script>
+</body>
+</html>
