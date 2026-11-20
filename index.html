@@ -34,6 +34,9 @@
   #done { display:none; text-align:center; padding:28px 16px; }
   #done .ck { font-size:48px; }
   .hp { position:absolute; left:-9999px; top:-9999px; height:0; overflow:hidden; }
+  body.embed header, body.embed footer { display:none; }
+  body.embed main { padding:10px; }
+  body.embed #done { padding:16px 8px; } body.embed #done .ck { font-size:36px; }
   footer { text-align:center; font-size:12px; color:var(--mute); padding:8px 16px 28px; }
 </style>
 </head>
@@ -108,6 +111,7 @@ var TYPES = [
   { k:'other',   label:'Something else', hint:'', ph:'Tell us what you need' }
 ];
 
+try { if (window.self !== window.top) document.body.className += ' embed'; } catch (e) { document.body.className += ' embed'; }
 var $ = function (id) { return document.getElementById(id); };
 var P = new URLSearchParams(location.search);
 // Unreplaced Service Autopilot merge tags like [clientname] mean the tag did not fill in, so treat them as blank
